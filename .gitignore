@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+
+# Django
+*.log
+db.sqlite3
+/staticfiles/
+/media/
+local_settings.py
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+
+# Scanner
+.scannerwork/
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+
+# Course handouts (kept local). Your own deliverables belong in docs/
+# and are deliberately NOT ignored.
+/Problem Statements-Team-C-Sec.pdf
+/Project team-C.pdf
+/Project Guidelines.docx
