@@ -26,9 +26,6 @@ coverage.xml
 htmlcov/
 .tox/
 
-# Scanner
-.scannerwork/
-
 # Editors / OS
 .idea/
 .vscode/
