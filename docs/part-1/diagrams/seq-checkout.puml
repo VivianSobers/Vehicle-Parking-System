@@ -1,0 +1,35 @@
+@startuml seq-checkout
+!include _style.iuml
+autonumber
+actor "Gate Attendant" as GA
+participant "Browser" as B
+participant "Gate view" as V
+participant "Gate Operations" as G
+participant "Billing" as BL
+database "PostgreSQL" as DB
+participant "Audit Log" as AU
+
+GA -> B : enter registration number or booking ref
+B -> V : POST /api/v1/gate/check-out
+V -> V : authenticate, check role = Attendant
+V -> G : check_out(identifier, now)
+G -> DB : SELECT reservation FOR UPDATE\nWHERE status = Active
+alt no active reservation
+  G --> V : NotFound
+  V --> B : 404 "No parked vehicle with this number"
+else found
+  G -> BL : compute_charge(reservation, exit time)
+  BL -> DB : tariff in force at entry time
+  BL -> BL : bill 30-minute blocks rounded up, minimum 1 hour;\noverstay past end + 10 min grace at 1.5x rate
+  BL --> G : itemised charge
+  G -> DB : UPDATE reservation SET status = Completed, exit_time;\nINSERT charge; COMMIT
+  G --> V : receipt
+  V --> B : 200 receipt page
+  GA -> B : mark paid (cash / UPI / card)
+  B -> V : POST /api/v1/gate/payments
+  V -> BL : record_payment(charge, method)
+  BL -> DB : INSERT payment
+  BL -> AU : log(attendant, "payment.recorded", amount)
+  V --> B : 200 receipt marked paid
+end
+@enduml

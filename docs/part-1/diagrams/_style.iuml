@@ -1,0 +1,31 @@
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam ArrowColor #1F1F1F
+skinparam componentStyle uml2
+skinparam component {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}
+skinparam database {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}
+skinparam node {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}
+skinparam package {
+  BorderColor #2F5496
+}
+skinparam sequence {
+  ParticipantBackgroundColor #FFFFFF
+  ParticipantBorderColor #2F5496
+  LifeLineBorderColor #8A8A8A
+  ActorBackgroundColor #FFFFFF
+  ActorBorderColor #2F5496
+}
+skinparam class {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}

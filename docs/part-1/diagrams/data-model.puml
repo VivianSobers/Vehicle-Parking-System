@@ -1,0 +1,101 @@
+@startuml data-model
+!pragma layout smetana
+!include _style.iuml
+hide circle
+hide methods
+
+class User {
+  id : bigint <<PK>>
+  {field} email : varchar(254) <<unique>>
+  {field} password_hash : varchar(128)
+  {field} full_name : varchar(100)
+  {field} mobile : char(10)
+  role : Driver | Attendant | Admin
+  accessible_permit : boolean
+  failed_attempts : smallint
+  locked_until : timestamptz
+  is_active : boolean
+}
+class Vehicle {
+  id : bigint <<PK>>
+  owner_id : FK User
+  {field} registration_no : varchar(13)
+  vehicle_type : Car | TwoWheeler | EV
+  {field} nickname : varchar(30)
+  is_active : boolean
+}
+class Lot {
+  id : bigint <<PK>>
+  {field} name : varchar(80)
+  {field} address : varchar(200)
+  opens_at : time
+  closes_at : time
+}
+class Slot {
+  id : bigint <<PK>>
+  lot_id : FK Lot
+  {field} code : varchar(10)
+  slot_type : Standard | TwoWheeler | EV | Accessible
+  distance_rank : smallint
+}
+class SlotBlock {
+  id : bigint <<PK>>
+  slot_id : FK Slot
+  period : tstzrange
+  {field} reason : varchar(200)
+}
+class Tariff {
+  id : bigint <<PK>>
+  lot_id : FK Lot
+  slot_type : enum
+  {field} hourly_rate_inr : numeric(8,2)
+  effective_from : date
+}
+class Reservation {
+  id : bigint <<PK>>
+  {field} booking_ref : char(15) <<unique>>
+  driver_id : FK User, null for walk-in
+  {field} vehicle_reg_no : varchar(13)
+  slot_id : FK Slot
+  period : tstzrange
+  status : Reserved | Active | Completed | Cancelled | Expired
+  is_walk_in : boolean
+  entry_time : timestamptz
+  exit_time : timestamptz
+  --
+  {field} EXCLUDE USING gist (slot_id WITH =, period WITH &&)
+  {field} WHERE status IN (Reserved, Active)
+}
+class Charge {
+  id : bigint <<PK>>
+  reservation_id : FK Reservation
+  kind : Parking | Overstay | LateCancel | NoShow
+  {field} amount_inr : numeric(8,2)
+}
+class Payment {
+  id : bigint <<PK>>
+  charge_id : FK Charge
+  method : Cash | UPI | Card
+  recorded_by : FK User
+  paid_at : timestamptz
+}
+class AuditLog {
+  id : bigint <<PK>>
+  actor_id : FK User
+  {field} action : varchar(50)
+  {field} target : varchar(100)
+  before : jsonb
+  after : jsonb
+  at : timestamptz
+}
+
+User "1" -- "0..5" Vehicle
+User "1" -- "0..*" Reservation
+Lot "1" -- "1..*" Slot
+Lot "1" -- "0..*" Tariff
+Slot "1" -- "0..*" SlotBlock
+Slot "1" -- "0..*" Reservation
+Reservation "1" -- "0..*" Charge
+Charge "1" -- "0..1" Payment
+User "1" -- "0..*" AuditLog
+@enduml

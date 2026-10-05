@@ -1,0 +1,41 @@
+@startuml seq-reserve
+!include _style.iuml
+autonumber
+actor Driver
+participant "Browser" as B
+participant "Reservations\nview" as V
+participant "Reservations\nservice" as R
+participant "Slot Allocation" as A
+database "PostgreSQL" as DB
+participant "Notifications" as N
+
+Driver -> B : choose lot, vehicle, start, end
+B -> V : POST /api/v1/reservations (CSRF token)
+V -> V : authenticate, check role = Driver
+V -> R : create_reservation(driver, vehicle, lot, window)
+R -> DB : outstanding dues, upcoming reservations
+alt dues > 0 or 2 upcoming reservations
+  R --> V : RuleViolation
+  V --> B : 409 with reason
+else allowed
+  R -> A : candidate_slots(vehicle type, lot, window)
+  A -> DB : eligible slots free for the whole window,\nordered by type match, distance rank, code
+  A --> R : ordered candidates
+  loop each candidate, at most 3 attempts
+    R -> DB : BEGIN; INSERT reservation (Reserved); COMMIT
+    alt exclusion constraint violated (slot taken concurrently)
+      DB --> R : IntegrityError, try next candidate
+    else inserted
+      DB --> R : reservation id
+    end
+  end
+  alt no candidate succeeded
+    R --> V : NoSlotAvailable
+    V --> B : 409 "No slot available for this window"
+  else reserved
+    R ->> N : send confirmation e-mail (asynchronous)
+    R --> V : reservation (booking ref, slot code)
+    V --> B : 201 confirmation page
+  end
+end
+@enduml

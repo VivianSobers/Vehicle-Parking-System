@@ -1,0 +1,55 @@
+@startuml component
+!pragma layout smetana
+!include _style.iuml
+
+actor "Driver" as Driver
+actor "Gate Attendant" as Attendant
+actor "Lot Administrator" as Admin
+
+node "Client device" {
+  [Web browser\n(Django templates + HTMX)] as Browser
+}
+
+node "Application server" {
+  [Reverse proxy (nginx, TLS)] as Proxy
+  package "Django web application" {
+    [Presentation layer\n(views, templates, DRF endpoints)] as Views
+    package "Domain modules" as Domain {
+      [Accounts and Access] as Accounts
+      [Vehicles] as Vehicles
+      [Lots and Slots] as Lots
+      [Reservations] as Reservations
+      [Slot Allocation] as Allocation
+      [Gate Operations] as Gate
+      [Billing] as Billing
+      [Reports] as Reports
+      [Audit Log] as Audit
+      [Notifications] as Notify
+    }
+  }
+  [Scheduler\n(expiry job, every minute)] as Scheduler
+}
+
+node "Forecast server" {
+  [Forecast service (FastAPI)] as Forecast
+  [Model trainer (weekly job)] as Trainer
+}
+
+database "PostgreSQL 16" as DB
+[SMTP mail server] as SMTP
+
+Driver --> Browser
+Attendant --> Browser
+Admin --> Browser
+Browser --> Proxy : HTTPS
+Proxy --> Views : WSGI
+Views --> Domain : service calls
+Views --> Forecast : REST/JSON
+Reservations --> Allocation
+Gate --> Billing
+Scheduler --> Reservations
+Domain --> DB : Django ORM
+Notify --> SMTP : SMTP/TLS
+Trainer --> DB : read-only role
+Trainer --> Forecast : model file
+@enduml

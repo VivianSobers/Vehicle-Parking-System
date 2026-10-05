@@ -1,0 +1,33 @@
+@startuml seq-login
+!include _style.iuml
+autonumber
+actor User
+participant "Browser" as B
+participant "Login view" as V
+participant "Accounts service" as AC
+database "PostgreSQL" as DB
+participant "Audit Log" as AU
+
+User -> B : e-mail, password
+B -> V : POST /accounts/login (CSRF token)
+V -> V : rate limit: 10 attempts per minute per IP
+V -> AC : authenticate(email, password)
+AC -> DB : user, failed attempts, locked_until
+alt account locked (locked_until > now)
+  AC --> V : Locked
+  V --> B : 423 "Account locked until HH:MM"
+else not locked
+  AC -> AC : verify password hash (PBKDF2-SHA256)
+  alt password wrong
+    AC -> DB : failed_attempts += 1; on the 5th failure\nwithin 15 min set locked_until = now + 15 min
+    AC -> AU : log("auth.failed", email, IP)
+    AC --> V : InvalidCredentials
+    V --> B : 401 "Invalid e-mail or password"
+  else password correct
+    AC -> DB : reset failed_attempts; rotate session id
+    AC -> AU : log("auth.login", user, IP)
+    AC --> V : user with role
+    V --> B : 302 to role home page with\nSecure, HttpOnly, SameSite=Lax session cookie
+  end
+end
+@enduml

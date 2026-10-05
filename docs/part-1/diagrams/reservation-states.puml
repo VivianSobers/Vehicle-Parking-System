@@ -1,0 +1,21 @@
+@startuml reservation-states
+!pragma layout smetana
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam state {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}
+hide empty description
+
+[*] --> Reserved : driver confirms booking\n[slot free for whole window]
+[*] --> Active : attendant registers walk-in\n[slot free now]
+Reserved --> Cancelled : driver cancels\n[before start time]
+Reserved --> Expired : hold window elapses\n[not checked in]
+Reserved --> Active : attendant checks vehicle in\n[within hold window]
+Active --> Completed : attendant checks vehicle out\n/ charge computed
+Cancelled --> [*]
+Expired --> [*]
+Completed --> [*]
+@enduml

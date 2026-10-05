@@ -1,0 +1,68 @@
+@startuml use-case
+!pragma layout smetana
+left to right direction
+skinparam defaultFontName "Liberation Serif"
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam actorStyle default
+skinparam usecase {
+  BackgroundColor #FFFFFF
+  BorderColor #2F5496
+}
+skinparam rectangle {
+  BorderColor #2F5496
+}
+
+actor "User" as User
+actor "Driver" as Driver
+actor "Gate Attendant" as Attendant
+actor "Lot Administrator" as Admin
+actor "System Clock" as Clock <<time>>
+
+User <|-- Driver
+User <|-- Attendant
+User <|-- Admin
+
+rectangle "Vehicle Parking System" {
+  usecase "Register account" as UC_Register
+  usecase "Manage vehicles" as UC_Vehicles
+  usecase "Search slot availability" as UC_Search
+  usecase "View predicted availability" as UC_Forecast
+  usecase "Reserve slot" as UC_Reserve
+  usecase "Allocate slot" as UC_Allocate
+  usecase "Cancel reservation" as UC_Cancel
+  usecase "View bookings and receipts" as UC_History
+  usecase "Check in vehicle" as UC_CheckIn
+  usecase "Register walk-in vehicle" as UC_WalkIn
+  usecase "Check out vehicle" as UC_CheckOut
+  usecase "Compute parking charge" as UC_Charge
+  usecase "Manage lots and slots" as UC_Lots
+  usecase "Configure tariffs" as UC_Tariff
+  usecase "Manage staff accounts" as UC_Staff
+  usecase "View occupancy and revenue reports" as UC_Reports
+  usecase "Expire unclaimed reservations" as UC_Expire
+  usecase "Log in / Log out" as UC_Login
+}
+
+Driver --> UC_Register
+Driver --> UC_Vehicles
+Driver --> UC_Search
+Driver --> UC_Reserve
+Driver --> UC_Cancel
+Driver --> UC_History
+Attendant --> UC_CheckIn
+Attendant --> UC_CheckOut
+Attendant --> UC_WalkIn
+Admin --> UC_Lots
+Admin --> UC_Tariff
+Admin --> UC_Staff
+Admin --> UC_Reports
+Clock --> UC_Expire
+User --> UC_Login
+
+UC_Reserve ..> UC_Allocate : <<include>>
+UC_WalkIn ..> UC_Allocate : <<include>>
+UC_CheckOut ..> UC_Charge : <<include>>
+UC_Cancel ..> UC_Charge : <<include>>
+UC_Forecast .up.> UC_Search : <<extend>>
+@enduml
