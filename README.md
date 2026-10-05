@@ -29,6 +29,18 @@ Team 10, Section C.
 | CI | GitHub Actions |
 | Testing | pytest with branch coverage |
 
+## Deliverables
+
+Part 1 deliverables are in [`docs/part-1/`](docs/part-1/), each as a Word file and a PDF:
+
+| Deliverable | Files |
+|---|---|
+| Software Requirements Specification | [`VPS_SRS.docx`](docs/part-1/VPS_SRS.docx), [`VPS_SRS.pdf`](docs/part-1/VPS_SRS.pdf) |
+| Software Test Plan, with test cases | [`VPS_Test_Plan.docx`](docs/part-1/VPS_Test_Plan.docx), [`VPS_Test_Plan.pdf`](docs/part-1/VPS_Test_Plan.pdf) |
+| Software Architecture and Design Specification | [`VPS_Architecture_Design.docx`](docs/part-1/VPS_Architecture_Design.docx), [`VPS_Architecture_Design.pdf`](docs/part-1/VPS_Architecture_Design.pdf) |
+
+The UML diagrams are in [`docs/part-1/diagrams/`](docs/part-1/diagrams/) as PlantUML sources with rendered PNGs.
+
 ## Status
 
 The project is at the requirements stage. CI runs on GitHub Actions, but no application code has been written yet.
