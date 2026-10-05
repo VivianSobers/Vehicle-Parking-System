@@ -25,11 +25,10 @@ Team 10, Section C.
 | Purpose | Tool |
 |---|---|
 | Version control | Git and GitHub |
-| Agile planning and bug tracking | [Jira (VPS)](https://viviansobers.atlassian.net/jira/software/projects/VPS/boards/101/backlog) |
+| Agile planning and bug tracking | GitHub Projects |
 | CI | GitHub Actions |
-| Static analysis | [SonarCloud](https://sonarcloud.io/dashboard?id=VivianSobers_Vehicle-Parking-System) |
 | Testing | pytest with branch coverage |
 
 ## Status
 
-The project is at the requirements stage. CI and SonarCloud analysis are set up, but no application code has been written yet.
+The project is at the requirements stage. CI runs on GitHub Actions, but no application code has been written yet.
