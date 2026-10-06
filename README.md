@@ -37,7 +37,7 @@ Part 1 deliverables are in [`docs/part-1/`](docs/part-1/) as Word files:
 |---|---|
 | Software Requirements Specification | [`VPS_SRS.docx`](docs/part-1/VPS_SRS.docx) |
 | Software Test Plan, with test cases | [`VPS_Test_Plan.docx`](docs/part-1/VPS_Test_Plan.docx) |
-| Software Architecture and Design Specification | [`VPS_Architecture_Design.docx`](docs/part-1/VPS_Architecture_Design.docx) |
+| Software Architecture and Design Specification | [`VPS_SAD.docx`](docs/part-1/VPS_SAD.docx) |
 
 The UML diagrams are in [`docs/part-1/diagrams/`](docs/part-1/diagrams/) as PlantUML sources with rendered PNGs.
 
