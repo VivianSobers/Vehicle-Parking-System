@@ -40,3 +40,6 @@ htmlcov/
 # Local working copies of deliverable templates and handouts; finished
 # deliverables live in docs/part-1/
 /Part 1 Deliverables/
+
+# PDF exports of the deliverables; only the Word files are kept
+/docs/part-1/*.pdf
